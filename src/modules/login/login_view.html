@@ -1,19 +1,25 @@
 <!DOCTYPE html>
 <html>
     <head>
-        
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     </head>
-    <body>
-        <p>Login Page</p>
-        <a href="/">Home Page</a><br/>
-        <form method="post">
-            <label for="username_id">User Name</label>
-            <input type="text" id="username_id"/><br/>
+    <body class="container">
+        <ul class="breadcrumb">
+            <li>
+                <a href="/">Home Page</a>
+            </li>
+            <li class="active">Login</li>
+        </ul>
+        <div class="row">
+            <form method="post" class="form-group col-xs-6 col-xs-offset-3 well">
+                <label for="username_id">User Name</label>
+                <input type="text" id="username_id" class="form-control"/><br/>
 
-            <label for="password_id">Password</label>
-            <input type="text" id="password_id"/><br/>
+                <label for="password_id">Password</label>
+                <input type="password" id="password_id" class="form-control"/><br/>
 
-            <input type="submit" value="Submit"/>
-        </form>
+                <input type="submit" value="Submit" class="btn btn-info"/>
+            </form>
+        </div>
     </body>
 </html>
