@@ -7,13 +7,23 @@ var server = http.createServer(app);
 var io = require("socket.io")(server);
 var mongoose = require("mongoose");
 
-var port = 3000;
+var port = process.env.PORT || 3000;
+
+// get our request parameters
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 app.disable('x-powered-by');
 app.use(express.static(__dirname + '/public'));
 
 app.get("/", function(request, response){
     // response.send("Hello World");
+    response.sendFile(path.join(__dirname, './modules', 'welcome', 'welcome_view.html'));
+})
+
+app.post("/", function(request, response){
+    // response.send("Hello World");
+    // var body = JSON.parse(request.body);
     response.sendFile(path.join(__dirname, './modules', 'welcome', 'welcome_view.html'));
 })
 
