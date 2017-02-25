@@ -10,7 +10,7 @@ var passport    = require('passport');
 var jwt         = require('jwt-simple');
 var UserModel        = require('./config/models/user');
 var config      = require('./config/database');
-
+// this is a comment again
 var port = process.env.PORT || 3000;
 
 // get our request parameters
