@@ -8,13 +8,13 @@ var io          = require("socket.io")(server);
 var mongoose    = require("mongoose");
 var passport    = require('passport');
 var jwt         = require('jwt-simple');
-var UserModel        = require('./config/models/user');
+var UserModel   = require('./config/models/user');
 var config      = require('./config/database');
 // this is a comment again
 var port = process.env.PORT || 3000;
 
 // get our request parameters
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.disable('x-powered-by');
@@ -24,6 +24,8 @@ app.use(express.static(__dirname + '/public'));
 mongoose.connect(config.database);
 
 // pass passport for configuration
+app.use(passport.initialize());
+// app.use(require('passport-session'));
 require('./config/passport')(passport);
 
 app.get("/", function(request, response){
@@ -86,6 +88,7 @@ app.post('/authenticate', function(req, res) {
 app.get('/memberinfo', passport.authenticate('jwt', { session: false}), function(req, res) {
   var token = getToken(req.headers);
   if (token) {
+    // these lines seems to be useless as passport authorization already added a req.user
     var decoded = jwt.decode(token, config.secret);
     UserModel.findOne({
       name: decoded.name
@@ -102,6 +105,13 @@ app.get('/memberinfo', passport.authenticate('jwt', { session: false}), function
     return res.status(403).send({success: false, msg: 'No token provided.'});
   }
 });
+
+// serve static files for the angular app 'module' dashboard
+app.use('/dashboard', express.static(__dirname + '/modules/dashboard'));
+// dashboard routing without authnetication
+app.get('/dashboard', function(req,res){
+    res.sendFile(path.join(__dirname, '/modules' , '/dashboard', 'index.html'));
+});
  
 getToken = function (headers) {
   if (headers && headers.authorization) {
@@ -115,6 +125,18 @@ getToken = function (headers) {
     return null;
   }
 };
+
+
+//Other routes here
+app.use(function(err, req, res, next){
+    if(err.statusCode){
+        // if he reached this part because of an error
+        res.type('txt').send('Not found');
+    }else{
+        // if he reached this part because of an invalid url
+        res.type('txt').send('Sorry, this is an invalid URL.');
+    }
+});
 
 server.listen(port, '0.0.0.0', function(){
     console.log("listening...");

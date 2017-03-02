@@ -35,6 +35,8 @@ UserSchema.pre('save', function (next) {
     }
 });
  
+// 'methods' is used to add an instance method to the model
+// 'statics' is used to add a class method
 UserSchema.methods.comparePassword = function (passw, resultFunc) {
     bcrypt.compare(passw, this.password, function (err, isMatch) {
         if (err) {
