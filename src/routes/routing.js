@@ -13,66 +13,82 @@ router.get('/test', function(req, res){
 });
  
 router.post('/signup', function(req, res) {
-  if (!req.body.name || !req.body.password) {
-    res.json({success: false, msg: 'Please pass name and password.'});
-  } else {
-    var newUser = new UserModel({
-      name: req.body.name,
-      password: req.body.password
-    });
-    // save the user
-    newUser.save(function(err) {
-      if (err) {
-        return res.json({success: false, msg: 'Username already exists.'});
-      }
-      res.json({success: true, msg: 'Successful created new user.'});
-    });
-  }
+
+    // Should be handeled in client side!
+    if (!req.body.email || !req.body.password) {
+
+        res.json({success: false, msg: 'Please fill all fields'});
+        
+    } else {
+
+        var new_user = new UserModel({
+            email     : req.body.email,
+            name      : req.body.name,
+            country   : req.body.country,
+            company   : req.body.company,
+            business  : req.body.business,
+            password  : req.body.password,
+            counter   : 0
+        });
+
+    // save Cutomer to DB
+    new_user.save(function(err) {
+      if (err) {
+           return res.json({success: false, msg: 'Account already exists !'}); 
+        }
+      res.json({success: true, msg: 'Thank you for registration, you can login now'});
+
+    });
+  }
 });
 
 router.post('/authenticate', function(req, res) {
-  UserModel.findOne({
-    name: req.body.name
-  }, function(err, user) {
-    if (err) throw err;
+    UserModel.findOne({email: req.body.email}, function(err, user) {
+
+        if (err) {
+            console.log("DB error!");
+            throw err;
+        }
  
-    if (!user) {
-      res.send({success: false, msg: 'Authentication failed. User not found.'});
-    } else {
-      // check if password matches
-      user.comparePassword(req.body.password, function (err, isMatch) {
-        if (isMatch && !err) {
-          // if user is found and password is right create a token
-          var token = jwt.encode(user, config.secret);
-          // return the information including token as JSON
-          res.json({success: true, token: 'JWT ' + token});
-        } else {
-          res.send({success: false, msg: 'Authentication failed. Wrong password.'});
-        }
-      });
-    }
-  });
+        if (!user) {
+            res.status(403).send({success: false, msg: "Authentication failed, Please sign up first"});
+        } else {
+            // check if password matches
+            user.comparePassword(req.body.password, function (err, isMatch) {
+                if (isMatch && !err) {
+                    // if user is found and password is right create a token
+                    var token = jwt.encode(user, config.secret);
+                    // return the information including token as JSON
+                    res.json({success: true, token: 'JWT ' + token});
+                } else {
+                    res.status(403).send( {success: false, msg: "Authentication failed, Wrong password"} );
+                }
+            });
+        }
+    });
 });
 
 router.get('/memberinfo', passport.authenticate('jwt', { session: false}), function(req, res) {
-  var token = getToken(req.headers);
-  if (token) {
-    // these lines seems to be useless as passport authorization already added a req.user
-    var decoded = jwt.decode(token, config.secret);
-    UserModel.findOne({
-      name: decoded.name
-    }, function(err, user) {
-        if (err) throw err;
- 
-        if (!user) {
-          return res.status(403).send({success: false, msg: 'Authentication failed. UserModel not found.'});
-        } else {
-          res.json({success: true, msg: 'Welcome in the member area ' + user.name + '!'});
-        }
-    });
-  } else {
-    return res.status(403).send({success: false, msg: 'No token provided.'});
-  }
+    var token = getToken(req.headers);
+    if (token) {
+        // these lines seems to be useless as passport authorization already added a req.user
+        var decoded = jwt.decode(token, config.secret);
+        UserModel.findOne({email: decoded.email}, function(err, user) {
+
+            if (err) {
+                console.log("DB Error!");
+                throw err;
+            }
+
+            if (!user) {
+                return res.status(403).send({success: false, msg: 'Authentication failed. User not found.'});
+            } else {
+                res.json( {success: true, msg: `Welcome to the members area, ${user.email}`});
+            }
+        });
+    } else {
+        return res.status(403).send({success: false, msg: 'No token provided.'});
+    }
 });
 
 getToken = function (headers) {

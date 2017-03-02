@@ -1,4 +1,5 @@
 var http        = require("http");
+var morgan      = require("morgan");
 var express     = require("express");
 var app         = express();
 var path        = require("path");
@@ -13,7 +14,7 @@ var config      = require('./config/database');
 var router      = require('./routes/routing.js');
 
 // this is a comment again
-var port = process.env.PORT || 3000;
+var port = process.env.PORT || config.port;
 
 // get our request parameters
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -24,6 +25,8 @@ app.use(express.static(__dirname + '/public'));
 
 // connect to database
 mongoose.connect(config.database);
+
+app.use(morgan("dev"));
 
 // pass passport for configuration
 app.use(passport.initialize());
