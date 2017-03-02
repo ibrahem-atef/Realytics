@@ -60,7 +60,7 @@ app.get('/dashboard', function(req,res){
 app.use(function(err, req, res, next){
     if(err.statusCode){
         // if he reached this part because of an error
-        res.type('txt').send('Not found');
+        res.type('txt').send('an error happened');
     }else{
         // if he reached this part because of an invalid url
         res.type('txt').send('Sorry, this is an invalid URL.');
