@@ -50,24 +50,11 @@ router.get("/login", function(request, response){
 
 // serve static files for the angular app 'module' dashboard
 app.use('/dashboard', express.static(__dirname + '/modules/dashboard'));
+
 // dashboard routing without authnetication
 app.get('/dashboard', function(req,res){
     res.sendFile(path.join(__dirname, '/modules' , '/dashboard', 'index.html'));
 });
- 
-getToken = function (headers) {
-  if (headers && headers.authorization) {
-    var parted = headers.authorization.split(' ');
-    if (parted.length === 2) {
-      return parted[1];
-    } else {
-      return null;
-    }
-  } else {
-    return null;
-  }
-};
-
 
 //Other routes here
 app.use(function(err, req, res, next){
