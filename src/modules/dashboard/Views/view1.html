@@ -1,13 +1,33 @@
 <link rel="stylesheet" href="Assets/CSS/view1.css">
 
 <link rel="stylesheet" href="Assets/CSS/blockDirective.css">
+<link rel="stylesheet" href="Assets/CSS/chartDirective.css">
 
 <div class="container">
 
     <div class="row">
-        <div class="col-xs-3">
+        <div class="col-xs-3" ng-cloak>
+            <block-directive span-data="monthly" title-data="Visits" content-data="120" small-data="per month" color-data="orange"></block-directive>
+        </div>
+        <div class="col-xs-3" ng-cloak>
             <block-directive span-data="monthly" title-data="Visits" content-data="120" small-data="per month"></block-directive>
-            <!-- <block-directive></block-directive> -->
+        </div>
+        <div class="col-xs-3" ng-cloak>
+            <block-directive span-data="monthly" title-data="Visits" content-data="120" small-data="per month"></block-directive>
+        </div>
+        <div class="col-xs-3" ng-cloak>
+            <block-directive span-data="monthly" title-data="Visits" content-data="120" small-data="per month"></block-directive>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-6" ng-cloak>
+            <!-- height is a factor of width -->
+            <chart-directive height-data="0.5" title-data="Pizza Eaters" pie-hole="0.4" chart-type="PieChart"></chart-directive>
+        </div>
+        <div class="col-xs-6" ng-cloak>
+            <!-- height is a factor of width -->
+            <chart-directive height-data="0.5" title-data="Pizza Eaters" pie-hole="0.4" chart-type="AreaChart"></chart-directive>
         </div>
     </div>
     

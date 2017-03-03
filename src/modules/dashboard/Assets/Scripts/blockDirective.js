@@ -1,5 +1,4 @@
 angular.module("myApp").directive("blockDirective", function(){
-    console.log("directive");
     return {
         restrict: "AE",
         replace: false,
@@ -9,8 +8,7 @@ angular.module("myApp").directive("blockDirective", function(){
             e.find("#titleBlockDirective").text(a.titleData);
             e.find("#contentBlockDirective").text(a.contentData);
             e.find("#smallBlockDirective").text(a.smallData);
-            globale = e;
-            console.log(a.spanData);
+            e.find("#spanBlockDirective").css("background-color", a.colorData);
         }
     }
 })
