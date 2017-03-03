@@ -5,9 +5,9 @@ module.exports = {
     // i changed the DB name so we both start from scratch :D
     "database": "mongodb://localhost/realytics_users",
     // the maximum number of allowed attempts for login
-    'max_login_attempts' : 30,
+    'max_login_attempts' : 3,
     // the number of minutes the account will be locked after several false login attempts are made
-    'lock_period': 5,
+    'lock_period': 1,
     // default server port
     'port' : 7777
 };

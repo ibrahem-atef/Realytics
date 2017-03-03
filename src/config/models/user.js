@@ -5,7 +5,7 @@ var config = require('../database.js');
  
 // set up a mongoose model
 var UserSchema = new Schema({
-email:
+        email:
         {
             type: String,
             required:true,
@@ -78,22 +78,33 @@ UserSchema.pre('save', function (next) {
 // 'methods' is used to add an instance method to the model
 // 'statics' is used to add a class method
 UserSchema.methods.comparePassword = function (pwd, callback) {
+    var that = this;
     bcrypt.compare(pwd, this.password, function (err, isMatch) {
         if (err) {
-            console.log(`User ${this.name} attempt to enter  ${loginPass} that didn't match`);
-            this.counter++;
+            console.log(`User ${that.name} attempt to enter  ${loginPass} that didn't match`);
             return callback(err);
         }
 
-        if(this.counter > config.max_login_attempts){
+        if(!isMatch){
+            that.counter++;
+            that.save();         
+        }
+
+        if(that.counter == config.max_login_attempts){
             // still needs testing
             // lock the account
-            setTimeout(function(that){that.counter = 0}, config.lock_period * 60 * 1000, this);
-            return callback(err);
+            that.counter++;
+            that.save();
+            setTimeout(function(){that.counter = 0; that.save()}, config.lock_period * 60 * 1000);
+        }
+
+        if(that.counter > config.max_login_attempts){
+            var message = "Can't log you in. You've exceeded maximum log in attempts allowed"
+            return callback(message);
         }
 
         callback(null, isMatch);
-        console.log(`User: ${this.name} authenticated`);
+        console.log(`User: ${that.name} authenticated`);
     });
 };
  

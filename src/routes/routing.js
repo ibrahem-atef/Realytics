@@ -55,7 +55,12 @@ router.post('/authenticate', function(req, res) {
         } else {
             // check if password matches
             user.comparePassword(req.body.password, function (err, isMatch) {
-                if (isMatch && !err) {
+                if(err){
+                    res.send(err);
+                }
+                else if (isMatch) {
+                    user.counter = 0;
+                    user.save();
                     // if user is found and password is right create a token
                     var token = jwt.encode(user, config.secret);
                     // return the information including token as JSON
