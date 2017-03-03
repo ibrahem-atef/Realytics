@@ -1,15 +1,14 @@
 <link rel="stylesheet" href="Assets/CSS/view1.css">
 
-<h1>View Test</h1>
+<link rel="stylesheet" href="Assets/CSS/blockDirective.css">
 
 <div class="container">
 
-    <table>
-        <tr ng-repeat="visitor in myData">
-            <td>
-                <p>{{visitor.email}}</p>
-            </td>
-        </tr>
-    </table>
+    <div class="row">
+        <div class="col-xs-3">
+            <block-directive span-data="monthly" title-data="Visits" content-data="120" small-data="per month"></block-directive>
+            <!-- <block-directive></block-directive> -->
+        </div>
+    </div>
     
 </div>
