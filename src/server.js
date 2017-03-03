@@ -1,3 +1,7 @@
+// require it once to add the testing visits data
+// require('./config/init_testing_visits_data.js');
+
+
 var http        = require("http");
 var morgan      = require("morgan");
 var express     = require("express");
@@ -14,6 +18,7 @@ var config      = require('./config/database');
 var router      = require('./routes/routing.js');
 var router_site_data
                 = require('./routes/routing_site_data.js');
+
 
 // this is a comment again
 var port = process.env.PORT || config.port;
