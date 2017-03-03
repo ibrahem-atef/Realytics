@@ -12,6 +12,8 @@ var jwt         = require('jwt-simple');
 var UserModel   = require('./config/models/user');
 var config      = require('./config/database');
 var router      = require('./routes/routing.js');
+var router_site_data
+                = require('./routes/routing_site_data.js');
 
 // this is a comment again
 var port = process.env.PORT || config.port;
@@ -34,6 +36,7 @@ app.use(passport.initialize());
 require('./config/passport')(passport);
 
 app.use('/', router);
+app.use('/site_data', router_site_data);
 
 // roue for home page
 router.get("/", function(request, response){
@@ -66,7 +69,9 @@ app.use(function(err, req, res, next){
         res.type('txt').send('an error happened');
     }else{
         // if he reached this part because of an invalid url
-        res.type('txt').send('Sorry, this is an invalid URL.');
+        // the error handling part needs improvements
+        // res.type('txt').send('Sorry, this is an invalid URL.');
+        res.send();
     }
 });
 
