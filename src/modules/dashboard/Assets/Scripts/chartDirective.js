@@ -1,4 +1,4 @@
-angular.module("myApp").directive("chartDirective", function(){
+angular.module("myApp").directive("chartDirective", function($http){
     return {
         restrict: "AE",
         replace: false,
@@ -11,32 +11,27 @@ angular.module("myApp").directive("chartDirective", function(){
 
             function drawChart() {
 
-                // Create the data table.
-                var data = new google.visualization.DataTable();
-                data.addColumn('string', 'Topping');
-                data.addColumn('number', 'Slices');
-                data.addRows([
-                ['Mushrooms', 3],
-                ['Onions', 1],
-                ['Olives', 1],
-                ['Zucchini', 1],
-                ['Pepperoni', 2]
-                ]);
+                $http.get(a.datatableUrl).then(function(jsonData){
+                    globale = a;
+                    var data = google.visualization.arrayToDataTable(jsonData.data , a.firstRowIsData === "true");
 
-                function DrawChart(){
-                    var width = e.parent().width();
+                    function DrawChart(){
+                        var width = e.parent().width();
 
-                    // Set chart options
-                    var options = { 'title':a.titleData, 'width': width, 'height': a.heightData * width, backgroundColor: '#f8f8f8',  pieHole: a.pieHole};
+                        // Set chart options
+                        var options = { 'title':a.titleData, 'width': width, 'height': a.heightData * width, backgroundColor: '#f8f8f8',  pieHole: a.pieHole};
 
-                    // Instantiate and draw our chart, passing in some options.
-                    var chart = new google.visualization[a.chartType](e.get(0));
-                    chart.draw(data, options);
-                }
-                
-                DrawChart();
+                        // Instantiate and draw our chart, passing in some options.
+                        var chart = new google.visualization[a.chartType](e.get(0));
+                        chart.draw(data, options);
+                    }
+                    
+                    DrawChart();
 
-                window.onresize = DrawChart;
+                    window.onresize = DrawChart;
+
+                });
+
             }
 
         }
