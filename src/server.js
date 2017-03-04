@@ -18,12 +18,14 @@ var config      = require('./config/database');
 var router      = require('./routes/routing.js');
 var router_site_data
                 = require('./routes/routing_site_data.js');
+var cookie      = require('cookie-parser');
 
 
 // this is a comment again
 var port = process.env.PORT || config.port;
 
 // get our request parameters
+app.use(cookie());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
@@ -42,6 +44,10 @@ require('./config/passport')(passport);
 
 app.use('/', router);
 app.use('/site_data', router_site_data);
+app.get('/cookie', function(req, res){
+    res.cookie('cookieName',1111, { maxAge: 900000, httpOnly: false });
+    res.send("hii");
+})
 
 // roue for home page
 router.get("/", function(request, response){
