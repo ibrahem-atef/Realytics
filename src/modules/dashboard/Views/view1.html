@@ -30,5 +30,11 @@
             <chart-directive datatable-url="/site_data" height-data="0.5" title-data="Pizza Eaters" pie-hole="0.4" chart-type="AreaChart" first-row-is-data=false></chart-directive>
         </div>
     </div>
+    <div class="row">
+        <div class="col-xs-6" ng-cloak>
+            <!-- height is a factor of width -->
+            <chart-directive datatable-url="/site_data/map" height-data="0.5" title-data="Hits Map" pie-hole="0.4" chart-type="GeoChart" first-row-is-data=false map-from-color="Orange" map-to-color="Red" dataless-region-color='grey'></chart-directive>
+        </div>
+    </div>
     
 </div>
