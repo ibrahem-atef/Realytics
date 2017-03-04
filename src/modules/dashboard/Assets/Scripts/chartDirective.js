@@ -4,35 +4,43 @@ angular.module("myApp").directive("chartDirective", function($http){
         replace: false,
         templateUrl: "Directives/chartDirective.html",
         link: function(s, e, a){
-            // Load the Visualization API and the corechart package.
-            google.charts.load('current', {'packages':['corechart']});
 
-            google.charts.setOnLoadCallback(drawChart);
+            $http.get(a.datatableUrl).then(function(jsonData){
 
-            function drawChart() {
+                // Load the Visualization API and the corechart package.
+                if(a.chartType == 'GeoChart')
+                     google.charts.load('current', {'packages': ['geochart']});
+                else
+                {
+                    google.charts.load('upcoming', {'packages':['corechart']});
 
-                $http.get(a.datatableUrl).then(function(jsonData){
-                    globale = a;
+                }
+
+
+                google.charts.setOnLoadCallback(drawChart);
+
+                function drawChart() {
+
                     var data = google.visualization.arrayToDataTable(jsonData.data , a.firstRowIsData === "true");
 
-                    function DrawChart(){
-                        var width = e.parent().width();
+                    console.log(a.chartType);
 
-                        // Set chart options
-                        var options = { 'title':a.titleData, 'width': width, 'height': a.heightData * width, backgroundColor: '#f8f8f8',  pieHole: a.pieHole};
+                    var width = e.parent().width();
 
-                        // Instantiate and draw our chart, passing in some options.
-                        var chart = new google.visualization[a.chartType](e.get(0));
-                        chart.draw(data, options);
-                    }
-                    
-                    DrawChart();
+                    // Set chart options
+                    console.log(a.mapColor);
+                    var options = { 'title':a.titleData, 'width': width, 'height': a.heightData * width, backgroundColor: '#f8f8f8',  pieHole: a.pieHole, region: a.mapRegion, colorAxis: {colors: [a.mapFromColor, a.mapToColor]} , datalessRegionColor: a.datalessRegionColor};
+                    // Instantiate and draw our chart, passing in some options.
+                    var chart = new google.visualization[a.chartType](e.get(0));
+                    chart.draw(data, options);
 
-                    window.onresize = DrawChart;
+                }
 
-                });
+                var old_func = window.onresize;
 
-            }
+                window.onresize = function(){drawChart(); old_func()};
+
+            });
 
         }
     }
