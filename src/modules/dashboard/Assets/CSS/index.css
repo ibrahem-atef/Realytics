@@ -1,3 +1,6 @@
 .container{margin-top: 20px;}
 body{background-color: #E0E0D0; padding: 50px}
 nav{box-shadow: 1px 1px 2px 1px grey}
+.margin_right20{margin-right: 20px}
+.profile-picture{display: inline}
+#user-name{display: inline-block}
