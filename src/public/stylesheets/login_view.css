@@ -1,0 +1,4 @@
+body{background-image: url("../images/bg.jpg"); background-size: 100%}
+#form{box-shadow: 2px 2px 5px black}
+p{margin-top: 20px}
+h1{color: white; text-align: center; font-weight: bold}
