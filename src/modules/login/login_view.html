@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     </head>
     <body class="container">
@@ -13,13 +14,39 @@
         <div class="row">
             <form method="post" class="form-group col-xs-6 col-xs-offset-3 well">
                 <label for="username_id">User Name</label>
-                <input type="text" id="username_id" class="form-control"/><br/>
+                <input type="text" id="username_id" class="form-control" name="email"/><br/>
 
                 <label for="password_id">Password</label>
-                <input type="password" id="password_id" class="form-control"/><br/>
+                <input type="password" id="password_id" class="form-control" name="password"/><br/>
 
                 <input type="submit" value="Submit" class="btn btn-info"/>
             </form>
+            <script>
+                function Submit(){
+
+                    $.ajax({
+                        type: 'post',
+                        url: '/login',
+                        data: $('form').serialize(),
+                        success: function(response) {
+                            // alert('response');
+                            // response1 = true;
+                            if(response.success == true){
+                            // success = true;
+                                // alert('hello');
+                                $.ajax({
+                                    type: "get",
+                                    beforeSend: function(request) {
+                                        request.setRequestHeader("Authorization", response.token);
+                                    },
+                                    url: "/memberinfo"
+                                });
+                            }
+                        }
+                    });
+
+                }
+            </script>
         </div>
     </body>
 </html>

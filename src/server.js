@@ -70,7 +70,7 @@ app.use('/dashboard', express.static(__dirname + '/modules/dashboard'));
 
 // dashboard routing without authnetication
 app.get('/dashboard', function(req,res){
-    res.sendFile(path.join(__dirname, '/modules' , '/dashboard', 'index.html'));
+    res.sendFile(path.join(__dirname, '/modules' , '/dashboard', 'MainPage.html'));
 });
 
 //Other routes here
