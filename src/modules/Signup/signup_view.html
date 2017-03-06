@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link rel="stylesheet" href="stylesheets/signup_view.css"/>
+    </head>
+    <body class="container">
+        <ul class="breadcrumb">
+            <li>
+                <a href="/">Home Page</a>
+            </li>
+            <li class="active">Signup</li>
+        </ul>
+        <div class="row">
+
+            <h1>Signup To Create a New Account</h1>
+
+            <form id="form" method="post" class="form-group col-xs-6 col-xs-offset-3 well" autocomplete="on">
+
+                <label for="email_id">User Email</label>
+                <input type="email" id="email_id" class="form-control" name="email" autofocus required placeholder="Enter your desired login email"/><br/>
+
+                <label for="username_id">User Name</label>
+                <input type="text" id="username_id" class="form-control" name="name" placeholder="Enter your name"/><br/>
+
+                <label for="password_id">Password</label>
+                <input type="password" id="password_id" class="form-control" name="password" required placeholder="Type your password and keep it safe"/><br/>
+
+                <label for="repassword_id">Retype Password</label>
+                <input type="password" id="repassword_id" class="form-control" name="repassword" autocomplete="off" required placeholder="Retype the password above"/><br/>
+
+                <label for="img_id">Profile Picture</label>
+                <input type="file" accept="image/*" id="img_id" class="form-control" placeholder="Select a small image as a profile picture"/><br/>
+
+                <input type="submit" value="Signup" class="btn btn-info"/><br/>
+
+                <p>Already have an accout? Go to the <a href="/login">Login Page</a> </p>
+            </form>
+            <script>
+                var password            = document.getElementById("password_id");
+                var confirm_password    = document.getElementById("repassword_id");
+
+                function validatePassword(){
+                    if(password.value != confirm_password.value) {
+                        confirm_password.setCustomValidity("Passwords Don't Match");
+                    } else {
+                        confirm_password.setCustomValidity('');
+                    }
+                }
+
+                password.onchange = validatePassword;
+                confirm_password.onkeyup = validatePassword;
+            </script>
+        </div>
+    </body>
+</html>
