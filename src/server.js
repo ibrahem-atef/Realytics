@@ -65,6 +65,10 @@ router.get("/login", function(request, response){
     response.sendFile(path.join(__dirname, './modules', 'login', 'login_view.html'));    
 });
 
+router.get("/signup", function(request, response){
+    response.sendFile(path.join(__dirname, './modules', 'signup', 'signup_view.html'));    
+});
+
 // serve static files for the angular app 'module' dashboard
 app.use('/dashboard', express.static(__dirname + '/modules/dashboard'));
 
