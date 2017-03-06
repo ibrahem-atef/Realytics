@@ -19,6 +19,7 @@ var router      = require('./routes/routing.js');
 var router_site_data
                 = require('./routes/routing_site_data.js');
 var cookie      = require('cookie-parser');
+var miner       = require('./routes/miner.js');
 
 
 // this is a comment again
@@ -44,6 +45,7 @@ require('./config/passport')(passport);
 
 app.use('/', router);
 app.use('/site_data', router_site_data);
+
 app.get('/cookie', function(req, res){
     res.cookie('cookieName',1111, { maxAge: 900000, httpOnly: false });
     res.send("hii");
@@ -76,6 +78,14 @@ app.use('/dashboard', express.static(__dirname + '/modules/dashboard'));
 app.get('/dashboard', function(req,res){
     res.sendFile(path.join(__dirname, '/modules' , '/dashboard', 'MainPage.html'));
 });
+
+// this route handles all remaining routes that are not handled by any app/router get/post
+app.use(function(req, res){
+    // res.send('not handled route');
+    res.redirect("/");
+});
+
+app.use("/api", miner);
 
 //Other routes here
 app.use(function(err, req, res, next){
