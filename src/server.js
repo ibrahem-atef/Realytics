@@ -20,6 +20,8 @@ var router_site_data
                 = require('./routes/routing_site_data.js');
 var cookie      = require('cookie-parser');
 var miner       = require('./routes/miner.js');
+var ejs         = require("ejs");
+
 
 
 // this is a comment again
@@ -30,6 +32,7 @@ app.use(cookie());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+app.set("view engine", "ejs");
 app.disable('x-powered-by');
 app.use(express.static(__dirname + '/public'));
 
@@ -51,6 +54,10 @@ app.get('/cookie', function(req, res){
     res.send("hii");
 })
 
+app.get("/testejs", function(req, res){
+    res.render(path.join(__dirname, './modules', 'login', 'login_view.ejs'), {error: "true", msg:"message"}); 
+});
+
 // roue for home page
 router.get("/", function(request, response){
     // response.send("Hello World");
@@ -64,11 +71,11 @@ router.post("/", function(request, response){
 });
 
 router.get("/login", function(request, response){
-    response.sendFile(path.join(__dirname, './modules', 'login', 'login_view.html'));    
+    response.render(path.join(__dirname, './modules', 'login', 'login_view.ejs'), {error: false, msg:""});
 });
 
 router.get("/signup", function(request, response){
-    response.sendFile(path.join(__dirname, './modules', 'signup', 'signup_view.html'));    
+    response.render(path.join(__dirname, './modules', 'signup', 'signup_view.ejs'), {error:false, msg:""});    
 });
 
 // serve static files for the angular app 'module' dashboard
