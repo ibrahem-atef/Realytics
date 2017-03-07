@@ -1,359 +1,298 @@
 var express     = require('express');
-
 var Router = express.Router();
-
 var config      = require('../config/database');
-
 var VisitModel   = require('../config/models/visit');
+var passport    = require('passport');
 
-
-
-Router.get("/total_hits", function(req, res){
-
-    VisitModel.count({} , function(err, number) {
-
-        if(err){ 
-
-            console.log("Cannot retreive data from database"); 
-
-            res.send("Sorry, Internal database error!")
-
-        }
-
-        res.json(["NumberOfHits", number]);
-
-    });
-
+Router.get("/total_hits/:site_name", passport.authenticate("jwt", {session: false}), function(req, res){
+    if(req.params.site_name){
+        VisitModel.count({"site": req.params.site_name, email: req.user} , function(err, number) {
+            if(err){ 
+                console.log("Cannot retreive data from database"); 
+                res.send("Sorry, Internal database error!")
+            }
+            res.json(number);
+        });
+    }
+    else{
+        VisitModel.count({email: req.user} , function(err, number) {
+            if(err){ 
+                console.log("Cannot retreive data from database"); 
+                res.send("Sorry, Internal database error!")
+            }
+            res.json(number);
+        });
+    }
 });
 
-
-
-Router.get("/unique_hits", function(req, res){
-
-    VisitModel.distinct("cookie_id" , function(err, array) {
-
-        if(err){ 
-
-            console.log("Cannot retreive data from database"); 
-
-            res.send("Sorry, Internal database error!")
-
-        }
-
-        res.json(["UniqueNumberOfHits", array.length]);
-
-    });
-
+Router.get(["/unique_hits/:site_name", "/unique_hits"], passport.authenticate("jwt", {session: false}), function(req, res){
+    if(req.params.site_name){
+        VisitModel.distinct("cookie_id", {"site": req.params.site_name, "email": req.user}, function(err, result) {
+            if(err){ 
+                console.log("Cannot retreive data from database"); 
+                res.send("Sorry, Internal database error!")
+            }
+            res.json(result.length);
+        });
+    }
+    else{
+        VisitModel.distinct("cookie_id", {"email": req.user}, function(err, result) {
+            if(err){ 
+                console.log("Cannot retreive data from database"); 
+                res.send("Sorry, Internal database error!");
+            }
+            res.json(result.length);
+        });
+    }
 });
 
+Router.get("/sites", passport.authenticate("jwt", {session: false}), function(req, res){
+    VisitModel.distinct("site", {email: req.user} , function(err, arr) {
+        if(err){ 
+            console.log("Cannot retreive data from database"); 
+            res.send("Sorry, Internal database error!")
+        }
+        // arr = ConvertToArray(arr, headers); 
 
+        // This output is not the same form of array of arrays
+        res.json(arr);
+    });
+});
 
-Router.get("/browsers/:site_name", function(req, res){
-
+Router.get(["/browsers/:site_name", "/browsers"], passport.authenticate("jwt", {session: false}), function(req, res){
     var headers = ["Browser", "Users"];
-
-    VisitModel.aggregate([
-
+    if(req.params.site_name){
+        VisitModel.aggregate([
+        {
+            $match : 
+            { 
+                site : req.params.site_name,
+                email: req.user
+            } 
+        }, 
+        { 
+            $group: 
             {
-
-                $match : 
-
-                { 
-
-                    site : req.params.site_name
-
-                } 
-
-            }, 
-
-            { 
-
-                $group: 
-
-                {
-
-                    _id:"$browser", 
-
-                    number: {$sum: 1}
-
-                } 
-
-            }
-
-    ], function (err, result) {
-
-            if (err) {
-
-                console.log("Cannot retreive data from database"); 
-
-                res.send("Sorry, Internal database error!")
-
-            } else {
-
-                result = ConvertToArray(result, headers);                
-
-                res.json(result);
-
-            }
-
-    });
-
-});
-
-
-
-Router.get("/os/:site_name", function(req, res){
-
-    var headers = ["Operating System", "Users"];    
-
-    VisitModel.aggregate([
-
-           {
-
-                $match : 
-
-                { 
-
-                    site : req.params.site_name
-
-                } 
-
-            }, 
-
-            { 
-
-                $group: 
-
-                {
-
-                    _id:"$os", 
-
-                    number: {$sum: 1}
-
-                } 
-
-            }
-
-    ], function (err, result) {
-
-            if (err) {
-
-                console.log("Cannot retreive data from database"); 
-
-                res.send("Sorry, Internal database error!")
-
-            } else {
-
-                result = ConvertToArray(result);
-
-                result = ConvertToArray(result, headers);                
-
-                res.json(result);
-
-            }
-
-    });
-
-});
-
-
-
-Router.get("/locations/:site_name", function(req, res){
-
-    var headers = ["Location", "Users"];    
-
-    VisitModel.aggregate([
-
-            {
-
-                $match : 
-
-                { 
-
-                    site : req.params.site_name
-
-                } 
-
-            }, 
-
-            { 
-
-                $group: 
-
-                {
-
-                    _id:"$location", 
-
-                    number: {$sum: 1}
-
-                } 
-
-            }
-
-    ], function (err, result) {
-
-            if (err) {
-
-                console.log("Cannot retreive data from database"); 
-
-                res.send("Sorry, Internal database error!")
-
-            } else {
-
-                result = ConvertToArray(result, headers);                
-
-                res.json(result);
-
-            }
-
-    });
-
-});
-
-
-
-Router.get("/devices/:site_name", function(req, res){
-
-    var headers = ["Device", "Users"];
-
-    VisitModel.aggregate([
-
-            {
-
-                $match : 
-
-                { 
-
-                    site : req.params.site_name
-
-                } 
-
-            }, 
-
-            { 
-
-                $group: 
-
-                {
-
-                    _id:"$browser", 
-
-                    count: {$sum: 1}
-
+                _id:"$browser", 
+                number: {$sum: 1}
+            } 
+        }
+        ], function (err, result) {
+                if (err) {
+                    console.log("Cannot retreive data from database"); 
+                    res.send("Sorry, Internal database error!")
+                } else {
+                    result = ConvertToArray(result, headers);                
+                    res.json(result);
                 }
-
-            }
-
-    ], function (err, result) {
-
-            if (err) {
-
-                console.log("Cannot retreive data from database"); 
-
-                res.send("Sorry, Internal database error!")
-
-            } else {
-
-                result = ConvertToArray(result, headers);
-
-                res.json(result);
-
-            }
-
-    });
-
+        });
+    }
+    else{
+        VisitModel.aggregate([
+        {
+            $match : 
+            { 
+                email: req.user
+            } 
+        }, 
+        { 
+            $group: 
+            {
+                _id:"$browser", 
+                number: {$sum: 1}
+            } 
+        }
+        ], function (err, result) {
+                if (err) {
+                    console.log("Cannot retreive data from database"); 
+                    res.send("Sorry, Internal database error!")
+                } else {
+                    result = ConvertToArray(result, headers);                
+                    res.json(result);
+                }
+        });
+    }
 });
 
+Router.get(["/os/:site_name", "/os"], passport.authenticate("jwt", {session: false}), function(req, res){
+    var headers = ["Operating System", "Users"];    
+    if(req.params.site_name){
+        VisitModel.aggregate([
+        {
+            $match : 
+            { 
+                site : req.params.site_name,
+                email: req.user
+            } 
+        }, 
+        { 
+            $group: 
+            {
+                _id:"$os", 
+                number: {$sum: 1}
+            } 
+        }
+        ], function (err, result) {
+                if (err) {
+                    console.log("Cannot retreive data from database"); 
+                    res.send("Sorry, Internal database error!")
+                } else {
+                    result = ConvertToArray(result);
+                    result = ConvertToArray(result, headers);                
+                    res.json(result);
+                }
+        });
+    }
+    else{
+        VisitModel.aggregate([
+        {
+            $match : 
+            { 
+                email: req.user
+            } 
+        }, 
+        { 
+            $group: 
+            {
+                _id:"$os", 
+                number: {$sum: 1}
+            } 
+        }
+        ], function (err, result) {
+                if (err) {
+                    console.log("Cannot retreive data from database"); 
+                    res.send("Sorry, Internal database error!")
+                } else {
+                    result = ConvertToArray(result);
+                    result = ConvertToArray(result, headers);                
+                    res.json(result);
+                }
+        });
+    }
+});
 
+Router.get(["/locations/:site_name", "/locations"], passport.authenticate("jwt", {session: false}), function(req, res){
+    var headers = ["Location", "Users"];    
+    if(req.params.site_name){
+        VisitModel.aggregate([
+        {
+            $match : 
+            { 
+                site : req.params.site_name,
+                email:req.user
+            } 
+        }, 
+        { 
+            $group: 
+            {
+                _id:"$location", 
+                number: {$sum: 1}
+            } 
+        }
+        ], function (err, result) {
+                if (err) {
+                    console.log("Cannot retreive data from database"); 
+                    res.send("Sorry, Internal database error!")
+                } else {
+                    result = ConvertToArray(result, headers);                
+                    res.json(result);
+                }
+        });
+    }
+    else{
+        VisitModel.aggregate([
+        {
+            $match : 
+            { 
+                email:req.user
+            } 
+        }, 
+        { 
+            $group: 
+            {
+                _id:"$location", 
+                number: {$sum: 1}
+            } 
+        }
+        ], function (err, result) {
+                if (err) {
+                    console.log("Cannot retreive data from database"); 
+                    res.send("Sorry, Internal database error!")
+                } else {
+                    result = ConvertToArray(result, headers);                
+                    res.json(result);
+                }
+        });
+    }
+});
+
+Router.get(["/devices/:site_name", "/devices"], passport.authenticate("jwt", {session: false}), function(req, res){
+    var headers = ["Device", "Users"];
+    if(req.params.site_name){
+        VisitModel.aggregate([
+        {
+            $match : 
+            { 
+                site : req.params.site_name,
+                email: req.user
+            } 
+        }, 
+        { 
+            $group: 
+            {
+                _id:"$device", 
+                count: {$sum: 1}
+            }
+        }
+        ], function (err, result) {
+                if (err) {
+                    console.log("Cannot retreive data from database"); 
+                    res.send("Sorry, Internal database error!")
+                } else {
+                    result = ConvertToArray(result, headers);
+                    res.json(result);
+                }
+        });
+    }
+    else{  
+        VisitModel.aggregate([
+        {
+            $match : 
+            { 
+                email: req.user
+            } 
+        }, 
+        { 
+            $group: 
+            {
+                _id:"$device", 
+                count: {$sum: 1}
+            }
+        }
+        ], function (err, result) {
+                if (err) {
+                    console.log("Cannot retreive data from database"); 
+                    res.send("Sorry, Internal database error!")
+                } else {
+                    result = ConvertToArray(result, headers);
+                    res.json(result);
+                }
+        });
+    }
+});
 
 function ConvertToArray(arrKey, headers){
-
     var i = 0, result = [];
-
     while(i < arrKey.length){
-
         result.push([]);
-
         for(var key in arrKey[i]){
-
-            result[i].push(arrKey[i][key])	
-
+            result[i].push(arrKey[i][key])
         }
-
         i++;
-
     }
-
     result.push(headers);
-
     return result.reverse();
-
-    // return (JSON.stringify(result, null, 4));
-
 }
 
 
-
-
-
-// function ConvertToArray(ArrObj){
-
-//     var endData = {};
-
-//     for (var i = 0; i < ArrObj.length; ++i) {
-
-//         var date = ArrObj[i].device;
-
-//         if (endData[ArrObj] === undefined)
-
-//             endData[ArrObj] = [];
-
-//         endData[ArrObj].push(ArrObj[i].device);
-
-//     }
-
-//     var finalData = [];
-
-//     for (var ed in endData) {
-
-//         var a = [ed];
-
-//         for (var i = 0; i < endData[ed].length; ++i) {
-
-//             a.push(endData[ed][i]);
-
-//         }
-
-//         finalData.push(a);
-
-//     }
-
-//     return finalData;
-
-// }
-
-
-
-
-
 module.exports = Router;
-
-
-
-// [
-
-//     [browser],
-
-//     [firefox],
-
-//     [chrome],
-
-//     [safari]
-
-
-
-// ]
-
-
-
-// [[browser],[firefox],[chrome],[safari]]
