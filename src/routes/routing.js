@@ -5,6 +5,8 @@ var passport    = require('passport');
 var jwt         = require('jwt-simple');
 var UserModel   = require('../config/models/user');
 var config      = require('../config/database');
+var path        = require("path");
+
 
 var router = express.Router();
 
@@ -18,12 +20,14 @@ router.post('/login', function(req, res, next){
         }
  
         if (!user) {
-            res.status(403).send({success: false, msg: "Authentication failed, Please sign up first"});
+            //res.status(403).send({success: false, msg: "Authentication failed, Please sign up first"});
+            res.render('../modules/login/login_view.ejs', {error: true, msg:"Authentication failed, Please sign up first"});                        
         } else {
             // check if password matches
             user.comparePassword(req.body.password, function (err, isMatch) {
                 if(err){
-                    res.send(err);
+                    //res.send(err);
+                    res.render('../modules/login/login_view.ejs', {error: true, msg:err});                                            
                 }
                 else if (isMatch) {
                     user.counter = 0;
@@ -38,7 +42,10 @@ router.post('/login', function(req, res, next){
                     //res.json({success: true, token: 'JWT ' + token});
                     var a = 5;
                 } else {
-                    res.status(403).send( {success: false, msg: "Authentication failed, Wrong password"} );
+                        //res.status(403).send( {success: false, msg: "Authentication failed, Wrong password"} );
+                        // res.render(path.join(__dirname, './modules', 'login', 'login_view.ejs'), {error: true, msg:"Authentication failed, Wrong password"});
+                        //app.set('views','../modules/login');
+                        res.render('../modules/login/login_view.ejs', {error: true, msg:"Authentication failed, Wrong password"});                        
                 }
             });
         }
@@ -78,9 +85,14 @@ router.post('/signup', function(req, res) {
     // save Cutomer to DB
     new_user.save(function(err) {
       if (err) {
-           return res.json({success: false, msg: 'Account already exists !'}); 
+            //return res.json({success: false, msg: 'Account already exists !'});
+            res.render('../modules/Signup/signup_view.ejs', {error: true, msg:"Account already exists !"});                                
         }
-      res.json({success: true, msg: 'Thank you for registration, you can login now'});
+        else{
+            //res.json({success: true, msg: 'Thank you for registration, you can login now'});
+            res.redirect('/login');
+
+        }
 
     });
   }
@@ -96,6 +108,7 @@ router.post('/authenticate', function(req, res) {
  
         if (!user) {
             res.status(403).send({success: false, msg: "Authentication failed, Please sign up first"});
+
         } else {
             // check if password matches
             user.comparePassword(req.body.password, function (err, isMatch) {
