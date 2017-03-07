@@ -12,9 +12,17 @@
             </li>
             <li class="active">Signup</li>
         </ul>
+        <% if(error){ %>
+            <div class="row col-xs-8 col-xs-offset-2">
+                <div class="alert alert-warning alert-dismissable">
+                    <a href="" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    <strong>Warning!</strong> <%= msg%>
+                </div>
+            </div>
+        <% } %>
         <div class="row">
 
-            <h1>Create a new account</h1>
+            <% if(!error) { %><h1>Create a new account</h1><% } %>
 
             <form id="form" method="post" class="form-group col-xs-6 col-xs-offset-3 well" autocomplete="on">
 
@@ -53,5 +61,6 @@
                 confirm_password.onkeyup = validatePassword;
             </script>
         </div>
+        
     </body>
 </html>
