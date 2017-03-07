@@ -2,9 +2,18 @@
 <html>
     <head>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="javascripts/Cookies.js"></script>
+        <script>
+            CheckLoggedIn();        
+
+            function CheckLoggedIn(){
+                $.ajax({type:"GET", url:"/api/loggedin", headers:{authorization: Cookies.get('authorization')}}).done( function(){
+                    window.location.replace("/dashboard");
+                });
+            }
+        </script>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <link rel="stylesheet" href="stylesheets/login_view.css"/>
-        <script src="javascripts/Cookies.js"></script>
 
 
     </head>
@@ -43,7 +52,6 @@
                 </form>
             </div>
             <script>
-                CheckLoggedIn();
 
                 function Submit(){
 
@@ -68,12 +76,6 @@
                         }
                     });
 
-                }
-
-                function CheckLoggedIn(){
-                    $.ajax({type:"GET", url:"/api/loggedin", headers:{authorization: Cookies.get('authorization')}}).done( function(){
-                        window.location.replace("/dashboard");
-                    });
                 }
             </script>
         </div>
