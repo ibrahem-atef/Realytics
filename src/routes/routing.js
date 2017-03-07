@@ -35,7 +35,11 @@ router.post('/login', function(req, res, next){
                     // if user is found and password is right create a token
                     var token = jwt.encode(user, config.secret);
                     // return the information including token as JSON
-                    res.cookie('authorization',token, { maxAge: 900000, httpOnly: false });
+                    if(req.body.rememberme)
+                        res.cookie('authorization','JWT ' + token, { maxAge: 900000, httpOnly: false });
+                    else
+                        res.cookie('authorization','JWT ' + token, { Expires: true, httpOnly: false });
+                        
                     req.headers.authorization = 'JWT ' + token;
                     // res.redirect('/test');
                     next();
