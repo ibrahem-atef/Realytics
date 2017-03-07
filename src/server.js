@@ -48,6 +48,7 @@ require('./config/passport')(passport);
 
 app.use('/', router);
 app.use('/site_data', router_site_data);
+app.use("/api", miner);
 
 app.get('/cookie', function(req, res){
     res.cookie('cookieName',1111, { maxAge: 900000, httpOnly: false });
@@ -92,7 +93,6 @@ app.use(function(req, res){
     res.redirect("/");
 });
 
-app.use("/api", miner);
 
 //Other routes here
 app.use(function(err, req, res, next){
