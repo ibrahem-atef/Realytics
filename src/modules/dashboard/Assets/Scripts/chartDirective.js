@@ -1,7 +1,7 @@
 angular.module("myApp").directive("chartDirective", function($http){
     return {
         restrict: "AE",
-        replace: false,
+        replace: true,
         templateUrl: "Directives/chartDirective.html",
         link: function(s, e, a){
 
@@ -36,7 +36,9 @@ angular.module("myApp").directive("chartDirective", function($http){
 
                 }
 
-                var old_func = window.onresize;
+                var old_func = function(){};
+                if(window.onresize)
+                    old_func = window.onresize;
 
                 window.onresize = function(){drawChart(); old_func()};
 

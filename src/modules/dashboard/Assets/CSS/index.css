@@ -1,4 +1,5 @@
 .container{margin-top: 20px;}
+.img-circle{margin-top: 5px}
 body{background-color: #E0E0D0; padding: 50px}
 body{
     background-image: linear-gradient(-45deg, lightgrey 25%, transparent 25%, transparent 50%, lightgrey 50%, lightgrey 75%, transparent 75%, transparent);

@@ -1,6 +1,17 @@
 <html ng-app="myApp">
     <head>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="Assets/Scripts/Cookies.js"></script>
+        <script>
+            CheckLoggedIn();
+            function CheckLoggedIn(){
+                // auth = Cookies.get("authorization");
+                $.ajax({type: "GET", url:"/api/loggedin", headers:{authorization: Cookies.get('authorization')}}).fail( function(){
+                    window.location.replace("/login");
+                    // console.log("failed");
+                });
+            }
+        </script>
 
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.js"></script>
         <script src="https:///ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular-route.js"></script>
@@ -32,19 +43,18 @@
             </div>
             
             <!--  class = "collapse navbar-collapse" -->
-            <div>
+            <div class="margin_right20">
                 <ul class = "nav navbar-nav">
                     <li class = "dropdown">
                         <a href="" class = "dropdown-toggle" data-toggle = "dropdown">
-                            My Sites
-                            <b class = "caret"></b>
+                                <p style="display: inline-flex" id="selected-site">My Sites</p>
+                                <b class = "caret"></b>
                         </a>
         
-                        <ul class = "dropdown-menu">
+                        <ul class = "dropdown-menu" id="site-list">
                             <li><a href = "">New Site...</a></li>
-                            <li class = "divider"></li>
-                            <li><a href = "">ABC.com</a></li>
-                            <li><a href = "">XYZ.com</a></li>
+                            <li><a href = "">All Sites</a></li>
+
                         </ul>
                     </li>
 
@@ -53,12 +63,10 @@
             </div>
             <div class="margin_right20">
                 <ul class = "nav navbar-nav navbar-right">
-                    <li class = "dropdown">
-                        <div class="profile-picture">
-                            <img class="img-circle" width="40" height="40" src="Assets/Images/ProfilePictures/user.jpg"/>
-                        </div>
-                        <a id="user-name" href = "" class = "dropdown-toggle" data-toggle = "dropdown">
-                            ibrahematef@gmail.com 
+                    <li class = "dropdown" style="display: inline-flex">
+                        <img class="img-circle" width="40" height="40" src="Assets/Images/ProfilePictures/user.jpg"/>
+                        <a href = "" class = "dropdown-toggle" data-toggle = "dropdown">
+                            <p id="user-name"></P>
                             <b class = "caret"></b>
                         </a>
                         
@@ -77,7 +85,6 @@
             </div>
         </nav>
 
-        <script src="Assets/Scripts/Cookies.js"></script>
         <script src="Assets/Scripts/dashboard.js"></script>
         <script src="app.js"></script>
         <script src="Controllers/controller1.js"></script>

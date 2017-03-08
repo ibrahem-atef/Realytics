@@ -1,1 +1,1 @@
-#chartDirective{background-color: #f8f8f8;}
+.chart-directive > div{background-color: #f8f8f8; box-shadow: 1px 1px 1px grey}

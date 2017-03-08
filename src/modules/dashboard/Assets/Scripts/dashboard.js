@@ -1,18 +1,39 @@
-CheckLoggedIn();
-
 $(document).ready(function(){
+
+    GetUserName();
+    GetUserSites();
+
     $(".nav a").on("click", function(){
         $(".nav").find(".active").removeClass("active");
-        $(this).parent().addClass("active");
+        // $(this).parent().addClass("active");
     }).on("focusout", function(){
         $(this).parent().removeClass("active");
     })
 })
 
-function CheckLoggedIn(){
-    auth = Cookies.get("authorization");
-    $.ajax({type: "GET", url:"/api/loggedin", headers:{authorization: Cookies.get('authorization')}}).fail( function(){
-        window.location.replace("/login");
-        // console.log("failed");
+function GetUserName(){
+    $.ajax({type: "GET", url:"/api/user_name", headers:{authorization: Cookies.get('authorization')}}).done( function(data, status){
+        $('#user-name').text(data.email);
+        console.log(data.email);
     });
 }
+
+function GetUserSites(){
+    $.ajax({type: "GET", url:"/api/sites", headers:{authorization: Cookies.get('authorization')}}).done( function(data, status){
+        console.log(data);
+        for(var item of data){
+            console.log(item);            
+            $('#site-list').append('<li class><a href="">' + item + '</a></li>');    
+        }
+
+        // event handling
+        $("#site-list li").click(function(){
+            if($(this).find("a").text() != "New Site...")
+                $("#selected-site").text($(this).find("a").text());
+            else{
+                // new site
+            }
+        })
+    });
+}
+

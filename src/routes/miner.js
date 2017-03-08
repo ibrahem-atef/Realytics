@@ -4,8 +4,19 @@ var config      = require('../config/database');
 var VisitModel   = require('../config/models/visit');
 var passport    = require('passport');
 
+Router.get("/hit", function(req, res){
+    // var data = getData(req);
+    // res.json({loggedin: true});
+    res.send();
+});
+
 Router.get("/loggedin", passport.authenticate("jwt", {session: false}), function(req, res){
     res.json({loggedin: true});
+    res.send();
+});
+
+Router.get("/user_name", passport.authenticate("jwt", {session: false}), function(req, res){
+    res.json({name: req.user.name, email:req.user.email});
     res.send();
 });
 
