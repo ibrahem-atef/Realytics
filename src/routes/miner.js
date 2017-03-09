@@ -3,16 +3,59 @@ var Router      = express.Router();
 var config      = require('../config/database');
 var VisitModel  = require('../config/models/visit');
 var passport    = require('passport');
+var atob        = require('atob');
 
-Router.get("/", function(req, res){
-    res.json();
-});
+// global.Buffer = global.Buffer || require('buffer').Buffer;
 
-Router.get("/hit", function(req, res){
+// if (typeof btoa === 'undefined') {
+//   global.btoa = function (str) {
+//     return new Buffer(str).toString('base64');
+//   };
+// }
+
+// if (typeof atob === 'undefined') {
+//   global.atob = function (b64Encoded) {
+//     return new Buffer(b64Encoded, 'base64').toString();
+//   };
+// }
+
+// Router.get("/", function(req, res){
+//     res.json();
+// });
+
+Router.get("/hit/:b64_obj", function(req, res){
     // var data = getData(req);
     // res.json({loggedin: true});
+    var obj = JSON.parse(frombase64url(req.params.b64_obj));
+    var user_device = req.useragent.isDesktop == true ? "desktop" : "mobile";
+    var visitor_id = req.cookies['realytics_user_id']
+    if(!visitor_id){
+        visitor_id = Date.now() + "ip";
+        res.cookie('realytics_user_id',visitor_id, { maxAge: 900000, httpOnly: false });
+    }
+
+
+    var new_visit = new VisitModel({
+        email     : obj.email,
+        site      : obj.site.toLowerCase(),
+        device    : user_device,
+        os        : req.useragent.os,
+        browser   : req.useragent.browser,
+        visit_time: Date.now(),
+        cookie_id : "0",
+        location  : "London",
+        avg_online_time : "0"
+
+    });
+    
+    new_visit.save();
+
     res.send();
 });
+
+function frombase64url(x) {
+    return atob(x.replace(/-/g,'+').replace(/_/g, '/'));
+}
 
 Router.get("/loggedin", passport.authenticate("jwt", {session: false}), function(req, res){
     res.json({loggedin: true});
@@ -430,12 +473,13 @@ function ConvertToArray(arrKey, headers){
 }
 
 Router.get("/add_site", passport.authenticate("jwt", {session: false}), function(req, res){
+    var user_device = req.useragent.isDesktop == true ? "desktop" : "mobile";
     var new_visit = new VisitModel({
         email     : req.user.email,
         site      : req.headers.site_name.toLowerCase(),
-        device    : "desktop",
-        os        : "win10",
-        browser   : "chrome",
+        device    : user_device,
+        os        : req.useragent.os,
+        browser   : req.useragent.browser,
         visit_time: Date.now(),
         cookie_id : "0",
         location  : "London",

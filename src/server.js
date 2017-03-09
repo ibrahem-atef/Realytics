@@ -21,6 +21,7 @@ var router_site_data
 var cookie      = require('cookie-parser');
 var miner       = require('./routes/miner.js');
 var ejs         = require("ejs");
+var useragent   = require('express-useragent');
 
 
 
@@ -31,6 +32,7 @@ var port = process.env.PORT || config.port;
 app.use(cookie());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(useragent.express());
 
 app.set("view engine", "ejs");
 app.disable('x-powered-by');

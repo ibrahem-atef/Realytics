@@ -57,7 +57,7 @@
                         </ul>
                     </li>
 
-                    <li><a href = "">View Tracking Code</a></li>
+                    <li><a href = "" data-toggle="modal" data-target="#TrackingCodeModal" onclick="UpdateTrackingCode()">View Tracking Code</a></li>
                 </ul>
             </div>
             <div class="margin_right20">
@@ -111,6 +111,25 @@
                 </div>
             </div>
         </div>
+
+        <div id="TrackingCodeModal" class="modal fade in">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span class="caret"></span></button>
+                        <h4 class="modal-title">Tracking Code</h4>
+                    </div>
+                    <div class="modal-body">
+                        <input type="text" class="form-control" placeholder="enter the site name" id="tracking_code"/>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" data-dismiss="modal" >Ok</button>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script>
         function AddNewSite(){
             // var new_site_name = $("#new_site_name").val().toLowerCase();
@@ -136,6 +155,19 @@
                 }
             });
         }
+
+        function UpdateTrackingCode(){
+            var user_site = $("#selected-site").text();
+            var user_email = $("#user-name").text();
+            var obj = {email: user_email, site: user_site};
+            $("#tracking_code").val("<script src=" + document.URL.split('dashboard')[0] + "api/hit/" + tobase64url(obj) + "><\/script>");
+        }
+
+        function tobase64url(o) {
+            var x = JSON.stringify(o);
+            return btoa(x).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'');
+        }
+
         </script>
 
     </body>
