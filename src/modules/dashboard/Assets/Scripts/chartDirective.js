@@ -4,8 +4,10 @@ angular.module("myApp").directive("chartDirective", function($http){
         replace: true,
         templateUrl: "Directives/chartDirective.html",
         link: function(s, e, a){
-
-            $http.get(a.datatableUrl).then(function(jsonData){
+            var siteName = $("#"+a.siteName).text();
+            if(siteName == "All Sites")
+                siteName = "all";
+            $.ajax({type: "GET", url: a.datatableUrl + siteName, headers:{authorization: Cookies.get('authorization')}}).done(function(jsonData){
 
                 // Load the Visualization API and the corechart package.
                 if(a.chartType == 'GeoChart')
@@ -20,15 +22,16 @@ angular.module("myApp").directive("chartDirective", function($http){
                 google.charts.setOnLoadCallback(drawChart);
 
                 function drawChart() {
+                    globale = jsonData;
+                    // console.log(jsonData);
+                    var data = google.visualization.arrayToDataTable(jsonData , a.firstRowIsData === "true");
 
-                    var data = google.visualization.arrayToDataTable(jsonData.data , a.firstRowIsData === "true");
-
-                    console.log(a.chartType);
+                    // console.log(a.chartType);
 
                     var width = e.parent().width();
 
                     // Set chart options
-                    console.log(a.mapColor);
+                    // console.log(a.mapColor);
                     var options = { 'title':a.titleData, 'width': width, 'height': a.heightData * width, backgroundColor: '#f8f8f8',  pieHole: a.pieHole, region: a.mapRegion, colorAxis: {colors: [a.mapFromColor, a.mapToColor]} , datalessRegionColor: a.datalessRegionColor};
                     // Instantiate and draw our chart, passing in some options.
                     var chart = new google.visualization[a.chartType](e.get(0));

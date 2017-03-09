@@ -47,13 +47,12 @@
                 <ul class = "nav navbar-nav">
                     <li class = "dropdown">
                         <a href="" class = "dropdown-toggle" data-toggle = "dropdown">
-                                <p style="display: inline-flex" id="selected-site">My Sites</p>
+                                <p style="display: inline-flex" id="selected-site">All Sites</p>
                                 <b class = "caret"></b>
                         </a>
         
                         <ul class = "dropdown-menu" id="site-list">
-                            <li><a href = "">New Site...</a></li>
-                            <li><a href = "">All Sites</a></li>
+                            <li><a href = "" data-toggle="modal" data-target="#modal_id">New Site...</a></li>
 
                         </ul>
                     </li>
@@ -94,6 +93,51 @@
 
         <div ng-view=""></div>
 
+        <div id="modal_id" class="modal fade in">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span class="caret"></span></button>
+                        <h4 class="modal-title">New Site</h4>
+                    </div>
+                    <div class="modal-body">
+                        <input type="text" class="form-control" placeholder="enter the site name" id="new_site_name"/>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" data-dismiss="modal" onclick="AddNewSite()">Ok</button>
+                        <button type="button" class="btn btn-warning" data-dismiss="modal" >Cancel</button>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+        function AddNewSite(){
+            // var new_site_name = $("#new_site_name").val().toLowerCase();
+            var new_site_name = $("#new_site_name").val();
+            // console.log("hello");
+            // console.log(new_site_name);
+            $.ajax({type: "get", url:"/api/add_site", headers:{authorization: Cookies.get('authorization'), site_name: new_site_name}}).done( function(data, status){
+                globale = data;
+                if(data.success){
+                    $('#site-list').append('<li class><a href="">' + new_site_name + '</a></li>');
+                    // event handling
+                    $("#site-list li").click(function(){
+                        if($(this).find("a").text() != "New Site...")
+                            $("#selected-site").text($(this).find("a").text());
+                        else{
+                            // new site
+                        }
+                    })
+                    alert("The new site was added successfully!");
+                }
+                else{
+                    alert("Couldn't create the new site!");
+                }
+            });
+        }
+        </script>
 
     </body>
+
 </html>

@@ -14,15 +14,16 @@ $(document).ready(function(){
 function GetUserName(){
     $.ajax({type: "GET", url:"/api/user_name", headers:{authorization: Cookies.get('authorization')}}).done( function(data, status){
         $('#user-name').text(data.email);
-        console.log(data.email);
+        // console.log(data.email);
     });
 }
 
 function GetUserSites(){
     $.ajax({type: "GET", url:"/api/sites", headers:{authorization: Cookies.get('authorization')}}).done( function(data, status){
-        console.log(data);
+        // console.log(data);
+        $('#site-list').append('<li class><a href="">' + "All Sites" + '</a></li>');
         for(var item of data){
-            console.log(item);            
+            // console.log(item);            
             $('#site-list').append('<li class><a href="">' + item + '</a></li>');    
         }
 

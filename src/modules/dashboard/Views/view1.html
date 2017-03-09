@@ -7,44 +7,50 @@
 
     <div class="row">
         <div class="col-xs-3" ng-cloak>
-            <block-directive span-data="monthly" title-data="Visits" content-data="120" small-data="per month" color-data="orange"></block-directive>
+            <block-directive ng-cloak site-name="selected-site" api-url="/api/total_hits/" span-data="Total" title-data="Visits" content-data="120" small-data="Hits" color-data="orange"></block-directive>
         </div>
         <div class="col-xs-3" ng-cloak>
-            <block-directive span-data="monthly" title-data="Visits" content-data="120" small-data="per month"></block-directive>
+            <block-directive ng-cloak site-name="selected-site" api-url="/api/unique_hits/" span-data="Unique" title-data="Visits" content-data="120" small-data="Hits" color-data="green"></block-directive>
         </div>
         <div class="col-xs-3" ng-cloak>
-            <block-directive span-data="monthly" title-data="Visits" content-data="120" small-data="per month"></block-directive>
+            <block-directive ng-cloak site-name="selected-site" api-url="/api/hits_14/" span-data="Total" title-data="Visits" content-data="120" small-data="In The Past 14 Days" color-data="orange"></block-directive>
         </div>
         <div class="col-xs-3" ng-cloak>
-            <block-directive span-data="monthly" title-data="Visits" content-data="120" small-data="per month"></block-directive>
+            <block-directive ng-cloak site-name="selected-site" api-url="/api/unique_14/" span-data="Unique" title-data="Visits" content-data="120" small-data="In The Past 14 Days" color-data="green"></block-directive>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12" ng-cloak>
+            <!-- height is a factor of width -->
+            <chart-directive datatable-url="/api/visits_chart/" site-name="selected-site" height-data="0.2" title-data="Hits In The Past Two Weeks" pie-hole="0.3" chart-type="AreaChart" first-row-is-data=false></chart-directive>
         </div>
     </div>
 
     <div class="row">
         <div class="col-xs-6" ng-cloak>
             <!-- height is a factor of width -->
-            <chart-directive datatable-url="/site_data" height-data="0.5" title-data="Pizza Eaters" pie-hole="0.4" chart-type="PieChart" first-row-is-data=false></chart-directive>
+            <chart-directive datatable-url="/api/devices/" site-name="selected-site" height-data="0.5" title-data="User Devices" pie-hole="0.3" chart-type="PieChart" first-row-is-data=false></chart-directive>
         </div>
         <div class="col-xs-6" ng-cloak>
             <!-- height is a factor of width -->
-            <chart-directive datatable-url="/site_data" height-data="0.5" title-data="Pizza Eaters" pie-hole="0.4" chart-type="AreaChart" first-row-is-data=false></chart-directive>
+            <chart-directive datatable-url="/api/os/" site-name="selected-site" height-data="0.5" title-data="Operating Systems Used" pie-hole="0.4" chart-type="BarChart" first-row-is-data=false></chart-directive>
         </div>
     </div>
     <div class="row">
         <div class="col-xs-6" ng-cloak>
             <!-- height is a factor of width -->
-            <chart-directive datatable-url="/site_data" height-data="0.5" title-data="Pizza Eaters" pie-hole="0.4" chart-type="LineChart" first-row-is-data=false></chart-directive>
+            <chart-directive datatable-url="/api/browsers/" site-name="selected-site" height-data="0.5" title-data="Browsers Most Used" pie-hole="0.4" chart-type="ColumnChart" first-row-is-data=false></chart-directive>
         </div>
+
         <div class="col-xs-6" ng-cloak>
             <!-- height is a factor of width -->
-            <chart-directive datatable-url="/site_data" height-data="0.5" title-data="Pizza Eaters" pie-hole="0.4" chart-type="BarChart" first-row-is-data=false></chart-directive>
+            <chart-directive datatable-url="/api/locations/" site-name="selected-site" height-data="0.5" title-data="Hits Map" pie-hole="0.4" chart-type="GeoChart" first-row-is-data=false map-from-color="Orange" map-to-color="Red" dataless-region-color='grey'></chart-directive>
         </div>
+
     </div>
     <div class="row">
-        <div class="col-xs-6" ng-cloak>
-            <!-- height is a factor of width -->
-            <chart-directive datatable-url="/site_data/map" height-data="0.5" title-data="Hits Map" pie-hole="0.4" chart-type="GeoChart" first-row-is-data=false map-from-color="Orange" map-to-color="Red" dataless-region-color='grey'></chart-directive>
-        </div>
+
     </div>
     
 </div>
